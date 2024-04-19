@@ -26,11 +26,7 @@ public class DatabaseManager {
 //        return DriverManager.getConnection(URL, USER, PASSWORD);
 //    }
 
-    public static void disconnect(Connection connection) throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
+
 
     public static List<Notebook> getAllNotebooks(Connection connection) throws SQLException {
         List<Notebook> notebooks = new ArrayList<>();
@@ -195,8 +191,13 @@ public class DatabaseManager {
         }
     }
 
-    public void Close() throws SQLException {
-        this.connection.close();
+    public static void disconnect(Connection connection) throws SQLException {
+        if (connection != null) {
+            connection.close();
+        }
     }
 
+    public void close() throws SQLException {
+        this.connection.close();
+    }
 }
