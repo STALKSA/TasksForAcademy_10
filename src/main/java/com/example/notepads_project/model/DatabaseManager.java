@@ -13,7 +13,7 @@ public class DatabaseManager {
 
 
     public DatabaseManager() {
-        try{
+        try {
             this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             System.out.println("подключение невозможно");
@@ -22,13 +22,8 @@ public class DatabaseManager {
 
     }
 
-//    public static Connection getConnection() throws SQLException {
-//        return DriverManager.getConnection(URL, USER, PASSWORD);
-//    }
 
-
-
-    public static List<Notebook> getAllNotebooks(Connection connection) throws SQLException {
+    public List<Notebook> getAllNotebooks() throws SQLException {
         List<Notebook> notebooks = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM notebooks")) {
@@ -47,7 +42,7 @@ public class DatabaseManager {
         return notebooks;
     }
 
-    public static List<String> getAllCountries(Connection connection) throws SQLException {
+    public List<String> getAllCountries() throws SQLException {
         List<String> countries = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT DISTINCT country FROM notebooks")) {
@@ -58,7 +53,7 @@ public class DatabaseManager {
         return countries;
     }
 
-    public static List<String> getCountryNotebookCounts(Connection connection) throws SQLException {
+    public List<String> getCountryNotebookCounts() throws SQLException {
         List<String> countryNotebookCounts = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT country, COUNT(*) AS notebook_count FROM notebooks GROUP BY country")) {
@@ -70,8 +65,7 @@ public class DatabaseManager {
         }
         return countryNotebookCounts;
     }
-
-    public static String getCountryWithMostNotebooks(Connection connection) throws SQLException {
+    public String getCountryWithMostNotebooks() throws SQLException {
         String countryWithMostNotebooks = "";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT country FROM notebooks GROUP BY country ORDER BY COUNT(*) DESC LIMIT 1")) {
@@ -82,7 +76,7 @@ public class DatabaseManager {
         return countryWithMostNotebooks;
     }
 
-    public static String getCountryWithLeastNotebooks(Connection connection) throws SQLException {
+    public String getCountryWithLeastNotebooks() throws SQLException {
         String countryWithLeastNotebooks = "";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT country FROM notebooks GROUP BY country ORDER BY COUNT(*) ASC LIMIT 1")) {
@@ -93,7 +87,7 @@ public class DatabaseManager {
         return countryWithLeastNotebooks;
     }
 
-    public static String getBrandWithMostNotebooks(Connection connection) throws SQLException {
+    public String getBrandWithMostNotebooks() throws SQLException {
         String brandWithMostNotebooks = "";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT brand FROM notebooks GROUP BY brand ORDER BY COUNT(*) DESC LIMIT 1")) {
@@ -104,7 +98,7 @@ public class DatabaseManager {
         return brandWithMostNotebooks;
     }
 
-    public static String getBrandWithLeastNotebooks(Connection connection) throws SQLException {
+    public String getBrandWithLeastNotebooks() throws SQLException {
         String brandWithLeastNotebooks = "";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT brand FROM notebooks GROUP BY brand ORDER BY COUNT(*) ASC LIMIT 1")) {
@@ -115,7 +109,7 @@ public class DatabaseManager {
         return brandWithLeastNotebooks;
     }
 
-    public static List<Notebook> getHardCoverNotebooks(Connection connection) throws SQLException {
+    public List<Notebook> getHardCoverNotebooks() throws SQLException {
         List<Notebook> hardCoverNotebooks = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM notebooks WHERE cover = 'hard'")) {
@@ -134,7 +128,7 @@ public class DatabaseManager {
         return hardCoverNotebooks;
     }
 
-    public static List<Notebook> getSoftCoverNotebooks(Connection connection) throws SQLException {
+    public List<Notebook> getSoftCoverNotebooks() throws SQLException {
         List<Notebook> softCoverNotebooks = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM notebooks WHERE cover = 'soft'")) {
@@ -154,7 +148,7 @@ public class DatabaseManager {
     }
 
     // Добавление строки
-    public static void addNotebook(Connection connection, Notebook notebook) throws SQLException {
+    public void addNotebook(Notebook notebook) throws SQLException {
         String sql = "INSERT INTO notebooks (brand, name, pageAmount, cover, country, pageType) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, notebook.getBrand());
@@ -168,7 +162,7 @@ public class DatabaseManager {
     }
 
     // Удаление строки
-    public static void deleteNotebook(Connection connection, int id) throws SQLException {
+    public void deleteNotebook(int id) throws SQLException {
         String sql = "DELETE FROM notebooks WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -177,7 +171,7 @@ public class DatabaseManager {
     }
 
     // Обновление строки
-    public static void updateNotebook(Connection connection, Notebook notebook) throws SQLException {
+    public void updateNotebook(Notebook notebook) throws SQLException {
         String sql = "UPDATE notebooks SET brand = ?, name = ?, pageAmount = ?, cover = ?, country = ?, pageType = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, notebook.getBrand());
@@ -188,12 +182,6 @@ public class DatabaseManager {
             statement.setString(6, notebook.getPageType());
             statement.setInt(7, notebook.getId());
             statement.executeUpdate();
-        }
-    }
-
-    public static void disconnect(Connection connection) throws SQLException {
-        if (connection != null) {
-            connection.close();
         }
     }
 
